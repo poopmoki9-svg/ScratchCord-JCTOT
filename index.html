@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ScratchCord: JCTOT</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">ScratchCord: JCTOT</div>
+      <p class="tagline">
+        A friendly, character-first social hub for JCTOT creators and friends.
+      </p>
+    </header>
+
+    <main class="layout">
+      <aside class="panel settings-panel">
+        <h2>Cloud Settings</h2>
+        <p>
+          Paste a public JSON base URL (Firebase Realtime Database or other cloud
+          JSON host). All devices should use the same base URL to share chat and
+          call data.
+        </p>
+        <label class="field">
+          <span>Cloud JSON Base URL</span>
+          <input
+            id="cloudBaseUrl"
+            type="url"
+            placeholder="https://your-project.firebaseio.com"
+          />
+        </label>
+        <label class="field">
+          <span>Local Fallback</span>
+          <input id="localFallback" type="checkbox" />
+          <small>Use localStorage if no cloud is set.</small>
+        </label>
+        <button id="saveCloud" class="primary">Save Settings</button>
+        <div id="cloudStatus" class="status-pill">Not connected</div>
+      </aside>
+
+      <section class="panel feed-panel">
+        <h2>World Feed</h2>
+        <div id="feed" class="card-list"></div>
+      </section>
+
+      <section class="panel profile-panel">
+        <h2>Character Profiles</h2>
+        <div id="profiles" class="card-grid"></div>
+      </section>
+
+      <section class="panel chat-panel">
+        <h2>Text Chat</h2>
+        <div class="chat-controls">
+          <label class="field">
+            <span>Room</span>
+            <select id="roomSelect"></select>
+          </label>
+          <button id="newRoom" class="secondary">+ New Room</button>
+          <label class="field">
+            <span>Character</span>
+            <select id="characterSelect"></select>
+          </label>
+          <label class="field inline">
+            <input id="oocToggle" type="checkbox" />
+            <span>Out-of-character</span>
+          </label>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <form id="chatForm" class="chat-form">
+          <input
+            id="chatInput"
+            type="text"
+            placeholder="Send a friendly message as your character..."
+            required
+          />
+          <button class="primary" type="submit">Send</button>
+        </form>
+      </section>
+
+      <section class="panel call-panel">
+        <h2>Voice Calling (WebRTC)</h2>
+        <div class="call-controls">
+          <label class="field">
+            <span>Call ID</span>
+            <input id="callId" type="text" placeholder="room-123" />
+          </label>
+          <label class="field">
+            <span>Character</span>
+            <select id="callerCharacter"></select>
+          </label>
+          <div class="button-row">
+            <button id="createCall" class="primary" type="button">
+              Create Call
+            </button>
+            <button id="joinCall" class="secondary" type="button">
+              Join Call
+            </button>
+            <button id="leaveCall" class="ghost" type="button" disabled>
+              Leave
+            </button>
+          </div>
+          <div class="button-row">
+            <button id="muteToggle" class="ghost" type="button" disabled>
+              Mute
+            </button>
+          </div>
+        </div>
+        <div class="call-status">
+          <div id="callState" class="status-pill">Idle</div>
+          <p id="callHint">
+            Calls are peer-to-peer. Share the Call ID with a friend and make
+            sure you are both connected to the same cloud JSON base.
+          </p>
+        </div>
+        <audio id="remoteAudio" autoplay></audio>
+      </section>
+    </main>
+
+    <section class="panel data-panel">
+      <h2>Projects & Series</h2>
+      <div id="projects" class="card-list"></div>
+      <div id="series" class="card-list"></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>
+        Original content only. No Scratch assets or branding are used.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

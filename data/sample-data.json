@@ -1,0 +1,86 @@
+{
+  "characters": [
+    {
+      "id": "bennybean07",
+      "name": "Bennybean07",
+      "bio": "A curious builder who loves inventing cozy gadgets for the JCTOT world.",
+      "traits": ["Inventive", "Supportive", "Playful"],
+      "role": "Maker of the CozyTech Toolkit",
+      "projects": ["CozyTech Toolkit", "GlowGarden"],
+      "color": "#ff7b72"
+    },
+    {
+      "id": "superjed19",
+      "name": "SuperJed19",
+      "bio": "A friendly strategist who keeps the team focused on big story beats.",
+      "traits": ["Focused", "Optimistic", "Creative"],
+      "role": "Story captain of the JCTOT universe",
+      "projects": ["Skyrail Saga", "JCTOT Almanac"],
+      "color": "#5f8fff"
+    },
+    {
+      "id": "kaitlyn365",
+      "name": "Kaitlyn365",
+      "bio": "A soundscape wizard who turns everyday moments into music.",
+      "traits": ["Empathetic", "Musical", "Bright"],
+      "role": "Audio guide and morale booster",
+      "projects": ["Echo Trails", "Solar Beats"],
+      "color": "#62d7b5"
+    }
+  ],
+  "feed": [
+    {
+      "title": "GlowGarden Week 3",
+      "type": "Project Update",
+      "character": "Bennybean07",
+      "body": "The GlowGarden now has a surprise night mode! Leave a sparkle reaction if you want more glowing plants.",
+      "reactions": ["✨", "🌱", "💡"]
+    },
+    {
+      "title": "Skyrail Saga Episode 2",
+      "type": "Series Drop",
+      "character": "SuperJed19",
+      "body": "Episode 2 is live. The crew meets the map keeper and learns a new secret about JCTOT history.",
+      "reactions": ["🚂", "🗺️", "⭐"]
+    },
+    {
+      "title": "Solar Beats Mix",
+      "type": "Sound Drop",
+      "character": "Kaitlyn365",
+      "body": "A light, upbeat mix for drawing sessions. Perfect for brainstorming together.",
+      "reactions": ["🎧", "🎵", "☀️"]
+    }
+  ],
+  "projects": [
+    {
+      "title": "CozyTech Toolkit",
+      "description": "A toolkit of friendly gadgets that help JCTOT characters build comfy spaces.",
+      "contributors": ["Bennybean07", "Kaitlyn365"],
+      "tags": ["Canon", "Workshop", "Gadgets"]
+    },
+    {
+      "title": "Skyrail Saga",
+      "description": "A serialized adventure following the Skyrail crew across floating districts.",
+      "contributors": ["SuperJed19", "Bennybean07"],
+      "tags": ["Series", "Canon", "Adventure"]
+    }
+  ],
+  "series": [
+    {
+      "title": "Skyrail Saga",
+      "description": "Episode-by-episode adventures on the Skyrail.",
+      "episodes": ["Episode 1: The Launch", "Episode 2: The Map Keeper"],
+      "canon": true
+    },
+    {
+      "title": "Echo Trails",
+      "description": "Short audio stories about the sounds of JCTOT.",
+      "episodes": ["Episode 1: River Echo", "Episode 2: Wind Alley"],
+      "canon": false
+    }
+  ],
+  "rooms": [
+    { "id": "global", "name": "Global Chat" },
+    { "id": "story-team", "name": "Story Team" }
+  ]
+}
