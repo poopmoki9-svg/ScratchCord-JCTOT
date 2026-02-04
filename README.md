@@ -24,7 +24,6 @@ ScratchCord: JCTOT is a fully client-side, Scratch-inspired social platform for 
   - `characterId`
   - `timestamp`
   - `text`
-  - `ooc` (out-of-character toggle)
 - The UI polls every 3 seconds to update messages.
 
 ## WebRTC Signaling Flow (No Backend)

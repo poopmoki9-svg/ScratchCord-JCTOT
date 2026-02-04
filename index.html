@@ -191,6 +191,21 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
+        grid-column: 1 / -1;
+      }
+
+      .chat-header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-end;
+      }
+
+      .chat-subtitle {
+        margin: 4px 0 0;
+        color: #5d6b84;
+        font-size: 0.95rem;
       }
 
       .chat-controls {
@@ -204,7 +219,8 @@
         background: #f8f9ff;
         border-radius: var(--radius-sm);
         padding: 12px;
-        max-height: 260px;
+        min-height: 260px;
+        max-height: 380px;
         overflow-y: auto;
         border: 1px solid var(--border);
       }
@@ -289,7 +305,7 @@
           <input
             id="cloudBaseUrl"
             type="url"
-            placeholder="https://your-public-json-host.example"
+            placeholder="your-public-json-host.example"
           />
         </label>
         <label class="field">
@@ -315,28 +331,29 @@
       </section>
 
       <section class="panel chat-panel">
-        <h2>Text Chat</h2>
-        <div class="chat-controls">
-          <label class="field">
-            <span>Room</span>
-            <select id="roomSelect"></select>
-          </label>
-          <button id="newRoom" class="secondary">+ New Room</button>
-          <label class="field">
-            <span>Character</span>
-            <select id="characterSelect"></select>
-          </label>
-          <label class="field inline">
-            <input id="oocToggle" type="checkbox" />
-            <span>Out-of-character</span>
-          </label>
+        <div class="chat-header">
+          <div>
+            <h2>Chatroom</h2>
+            <p class="chat-subtitle">Pick a room and start chatting.</p>
+          </div>
+          <div class="chat-controls">
+            <label class="field">
+              <span>Room</span>
+              <select id="roomSelect"></select>
+            </label>
+            <button id="newRoom" class="secondary">+ New Room</button>
+            <label class="field">
+              <span>Character</span>
+              <select id="characterSelect"></select>
+            </label>
+          </div>
         </div>
         <div id="chatMessages" class="chat-messages"></div>
         <form id="chatForm" class="chat-form">
           <input
             id="chatInput"
             type="text"
-            placeholder="Send a friendly message as your character..."
+            placeholder="Send a friendly message..."
             required
           />
           <button class="primary" type="submit">Send</button>
@@ -443,7 +460,6 @@
         chatMessages: document.getElementById("chatMessages"),
         chatForm: document.getElementById("chatForm"),
         chatInput: document.getElementById("chatInput"),
-        oocToggle: document.getElementById("oocToggle"),
         callerCharacter: document.getElementById("callerCharacter"),
         callId: document.getElementById("callId"),
         createCall: document.getElementById("createCall"),
@@ -689,10 +705,9 @@
           .map((message) => {
             const character = state.data.characters.find((entry) => entry.id === message.characterId);
             const speaker = character ? character.name : "Unknown";
-            const oocLabel = message.ooc ? "(OOC)" : "";
             return `
               <div class="chat-message">
-                <div class="chat-meta">${speaker} ${oocLabel} • ${formatTimestamp(message.timestamp)}</div>
+                <div class="chat-meta">${speaker} • ${formatTimestamp(message.timestamp)}</div>
                 <div class="chat-text">${message.text}</div>
               </div>
             `;
@@ -731,7 +746,6 @@
           characterId: dom.characterSelect.value,
           timestamp: new Date().toISOString(),
           text,
-          ooc: dom.oocToggle.checked,
         };
 
         const current = (await cloud().get(`chats/${roomId}`)) || { messages: {} };
