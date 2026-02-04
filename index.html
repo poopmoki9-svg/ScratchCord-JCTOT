@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ScratchCord: JCTOT</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7ff;
+        --panel: #ffffff;
+        --ink: #233044;
+        --accent: #ffb547;
+        --accent-2: #72d6c8;
+        --accent-3: #7c7bff;
+        --border: #e1e6f5;
+        --shadow: 0 12px 30px rgba(35, 48, 68, 0.12);
+        --radius: 18px;
+        --radius-sm: 12px;
+        font-family: "Nunito", "Comic Neue", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .site-header {
+        padding: 32px 24px 10px;
+        text-align: center;
+      }
+
+      .logo {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--accent-3);
+      }
+
+      .tagline {
+        margin: 8px auto 0;
+        max-width: 640px;
+        color: #4d5c76;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        padding: 20px 24px 0;
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+        border: 2px solid var(--border);
+      }
+
+      .panel h2 {
+        margin-top: 0;
+        font-size: 1.3rem;
+      }
+
+      .settings-panel p {
+        font-size: 0.95rem;
+        color: #50617b;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+      }
+
+      .field.inline {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .field input,
+      .field select {
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        font-size: 0.95rem;
+      }
+
+      .field input[type="checkbox"] {
+        width: auto;
+      }
+
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      button.primary {
+        background: var(--accent-3);
+        color: white;
+      }
+
+      button.secondary {
+        background: var(--accent-2);
+        color: #0d2d29;
+      }
+
+      button.ghost {
+        background: transparent;
+        border: 2px solid var(--border);
+        color: var(--ink);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #eff2ff;
+        font-size: 0.85rem;
+        margin-top: 6px;
+      }
+
+      .card-list,
+      .card-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .card {
+        background: #fdfdff;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        padding: 12px;
+      }
+
+      .card h3 {
+        margin-top: 0;
+        margin-bottom: 6px;
+      }
+
+      .profile-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: white;
+      }
+
+      .tag {
+        display: inline-flex;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        background: #ffe8c2;
+        color: #7b4300;
+        margin-right: 6px;
+      }
+
+      .chat-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .chat-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-end;
+      }
+
+      .chat-messages {
+        background: #f8f9ff;
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        max-height: 260px;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+      }
+
+      .chat-message {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #d9e0f0;
+      }
+
+      .chat-message:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .chat-meta {
+        font-size: 0.8rem;
+        color: #52607b;
+      }
+
+      .chat-text {
+        margin-top: 4px;
+        font-size: 0.95rem;
+      }
+
+      .chat-form {
+        display: flex;
+        gap: 12px;
+      }
+
+      .chat-form input {
+        flex: 1;
+      }
+
+      .call-panel audio {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .call-controls .button-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .data-panel {
+        margin: 20px 24px 40px;
+      }
+
+      .site-footer {
+        text-align: center;
+        padding: 10px 0 30px;
+        color: #5d6b84;
+      }
+
+      @media (max-width: 720px) {
+        .chat-form {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">ScratchCord: JCTOT</div>
+      <p class="tagline">
+        A friendly, character-first social hub for JCTOT creators and friends.
+      </p>
+    </header>
+
+    <main class="layout">
+      <aside class="panel settings-panel">
+        <h2>Cloud Settings</h2>
+        <p>
+          Paste a public JSON base URL (Firebase Realtime Database or other cloud
+          JSON host). All devices should use the same base URL to share chat and
+          call data.
+        </p>
+        <label class="field">
+          <span>Cloud JSON Base URL</span>
+          <input
+            id="cloudBaseUrl"
+            type="url"
+            placeholder="https://your-public-json-host.example"
+          />
+        </label>
+        <label class="field">
+          <span>Local Fallback</span>
+          <input id="localFallback" type="checkbox" />
+          <small>Use localStorage if no cloud is set.</small>
+        </label>
+        <button id="saveCloud" class="primary">Save Settings</button>
+        <div id="cloudStatus" class="status-pill">Not connected</div>
+      </aside>
+
+      <section class="panel feed-panel">
+        <h2>World Feed</h2>
+        <div id="feed" class="card-list"></div>
+      </section>
+
+      <section class="panel profile-panel">
+        <h2>Character Profiles</h2>
+        <div id="profiles" class="card-grid"></div>
+      </section>
+
+      <section class="panel chat-panel">
+        <h2>Text Chat</h2>
+        <div class="chat-controls">
+          <label class="field">
+            <span>Room</span>
+            <select id="roomSelect"></select>
+          </label>
+          <button id="newRoom" class="secondary">+ New Room</button>
+          <label class="field">
+            <span>Character</span>
+            <select id="characterSelect"></select>
+          </label>
+          <label class="field inline">
+            <input id="oocToggle" type="checkbox" />
+            <span>Out-of-character</span>
+          </label>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <form id="chatForm" class="chat-form">
+          <input
+            id="chatInput"
+            type="text"
+            placeholder="Send a friendly message as your character..."
+            required
+          />
+          <button class="primary" type="submit">Send</button>
+        </form>
+      </section>
+
+      <section class="panel call-panel">
+        <h2>Voice Calling (WebRTC)</h2>
+        <div class="call-controls">
+          <label class="field">
+            <span>Call ID</span>
+            <input id="callId" type="text" placeholder="room-123" />
+          </label>
+          <label class="field">
+            <span>Character</span>
+            <select id="callerCharacter"></select>
+          </label>
+          <div class="button-row">
+            <button id="createCall" class="primary" type="button">
+              Create Call
+            </button>
+            <button id="joinCall" class="secondary" type="button">
+              Join Call
+            </button>
+            <button id="leaveCall" class="ghost" type="button" disabled>
+              Leave
+            </button>
+          </div>
+          <div class="button-row">
+            <button id="muteToggle" class="ghost" type="button" disabled>
+              Mute
+            </button>
+          </div>
+        </div>
+        <div class="call-status">
+          <div id="callState" class="status-pill">Idle</div>
+          <p id="callHint">
+            Calls are peer-to-peer. Share the Call ID with a friend and make
+            sure you are both connected to the same cloud JSON base.
+          </p>
+        </div>
+        <audio id="remoteAudio" autoplay></audio>
+      </section>
+    </main>
+
+    <section class="panel data-panel">
+      <h2>Projects & Series</h2>
+      <div id="projects" class="card-list"></div>
+      <div id="series" class="card-list"></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>
+        Original content only. No Scratch assets or branding are used.
+      </p>
+    </footer>
+
+    <script>
+      /* ScratchCord: JCTOT
+       * Fully client-side social hub with chat + WebRTC voice calling.
+       * All storage is via public JSON endpoints (Firebase REST or similar).
+       */
+
+      const DEFAULT_SETTINGS = {
+        cloudBaseUrl: "",
+        useLocalFallback: true,
+      };
+
+      const SAMPLE_DATA = {
+        characters: [
+          {
+            id: "bennybean07",
+            name: "Bennybean07",
+            bio: "A curious builder who loves inventing cozy gadgets for the JCTOT world.",
+            traits: ["Inventive", "Supportive", "Playful"],
+            role: "Maker of the CozyTech Toolkit",
+            projects: ["CozyTech Toolkit", "GlowGarden"],
+            color: "#ff7b72",
+          },
+          {
+            id: "superjed19",
+            name: "SuperJed19",
+            bio: "A friendly strategist who keeps the team focused on big story beats.",
+            traits: ["Focused", "Optimistic", "Creative"],
+            role: "Story captain of the JCTOT universe",
+            projects: ["Skyrail Saga", "JCTOT Almanac"],
+            color: "#5f8fff",
+          },
+          {
+            id: "kaitlyn365",
+            name: "Kaitlyn365",
+            bio: "A soundscape wizard who turns everyday moments into music.",
+            traits: ["Empathetic", "Musical", "Bright"],
+            role: "Audio guide and morale booster",
+            projects: ["Echo Trails", "Solar Beats"],
+            color: "#62d7b5",
+          },
+        ],
+        feed: [
+          {
+            title: "GlowGarden Week 3",
+            type: "Project Update",
+            character: "Bennybean07",
+            body: "The GlowGarden now has a surprise night mode! Leave a sparkle reaction if you want more glowing plants.",
+            reactions: ["✨", "🌱", "💡"],
+          },
+          {
+            title: "Skyrail Saga Episode 2",
+            type: "Series Drop",
+            character: "SuperJed19",
+            body: "Episode 2 is live. The crew meets the map keeper and learns a new secret about JCTOT history.",
+            reactions: ["🚂", "🗺️", "⭐"],
+          },
+          {
+            title: "Solar Beats Mix",
+            type: "Sound Drop",
+            character: "Kaitlyn365",
+            body: "A light, upbeat mix for drawing sessions. Perfect for brainstorming together.",
+            reactions: ["🎧", "🎵", "☀️"],
+          },
+        ],
+        projects: [
+          {
+            title: "CozyTech Toolkit",
+            description: "A toolkit of friendly gadgets that help JCTOT characters build comfy spaces.",
+            contributors: ["Bennybean07", "Kaitlyn365"],
+            tags: ["Canon", "Workshop", "Gadgets"],
+          },
+          {
+            title: "Skyrail Saga",
+            description: "A serialized adventure following the Skyrail crew across floating districts.",
+            contributors: ["SuperJed19", "Bennybean07"],
+            tags: ["Series", "Canon", "Adventure"],
+          },
+        ],
+        series: [
+          {
+            title: "Skyrail Saga",
+            description: "Episode-by-episode adventures on the Skyrail.",
+            episodes: ["Episode 1: The Launch", "Episode 2: The Map Keeper"],
+            canon: true,
+          },
+          {
+            title: "Echo Trails",
+            description: "Short audio stories about the sounds of JCTOT.",
+            episodes: ["Episode 1: River Echo", "Episode 2: Wind Alley"],
+            canon: false,
+          },
+        ],
+        rooms: [
+          { id: "global", name: "Global Chat" },
+          { id: "story-team", name: "Story Team" },
+        ],
+      };
+
+      const EXAMPLE_CLOUD_LAYOUT = {
+        rooms: [
+          { id: "global", name: "Global Chat" },
+          { id: "story-team", name: "Story Team" },
+        ],
+        chats: {
+          global: {
+            messages: {
+              "1700000000-a1b2": {
+                characterId: "bennybean07",
+                timestamp: "2024-01-01T18:22:00.000Z",
+                text: "Welcome to ScratchCord!",
+                ooc: false,
+              },
+            },
+          },
+        },
+        calls: {
+          "call-abc12": {
+            offer: { type: "offer", sdp: "..." },
+            answer: { type: "answer", sdp: "..." },
+            caller: "bennybean07",
+            callee: "superjed19",
+            callerCandidates: {
+              "1700000001": { candidate: "...", sdpMid: "0", sdpMLineIndex: 0 },
+            },
+            calleeCandidates: {
+              "1700000002": { candidate: "...", sdpMid: "0", sdpMLineIndex: 0 },
+            },
+          },
+        },
+      };
+
+      const state = {
+        settings: { ...DEFAULT_SETTINGS },
+        data: SAMPLE_DATA,
+        activeRoomId: "global",
+        chatPoller: null,
+        callPoller: null,
+        peerConnection: null,
+        localStream: null,
+        isCaller: false,
+        callId: null,
+        sentCandidateIds: new Set(),
+        processedRemoteCandidates: new Set(),
+      };
+
+      const dom = {
+        cloudBaseUrl: document.getElementById("cloudBaseUrl"),
+        localFallback: document.getElementById("localFallback"),
+        saveCloud: document.getElementById("saveCloud"),
+        cloudStatus: document.getElementById("cloudStatus"),
+        feed: document.getElementById("feed"),
+        profiles: document.getElementById("profiles"),
+        projects: document.getElementById("projects"),
+        series: document.getElementById("series"),
+        roomSelect: document.getElementById("roomSelect"),
+        newRoom: document.getElementById("newRoom"),
+        characterSelect: document.getElementById("characterSelect"),
+        chatMessages: document.getElementById("chatMessages"),
+        chatForm: document.getElementById("chatForm"),
+        chatInput: document.getElementById("chatInput"),
+        oocToggle: document.getElementById("oocToggle"),
+        callerCharacter: document.getElementById("callerCharacter"),
+        callId: document.getElementById("callId"),
+        createCall: document.getElementById("createCall"),
+        joinCall: document.getElementById("joinCall"),
+        leaveCall: document.getElementById("leaveCall"),
+        muteToggle: document.getElementById("muteToggle"),
+        callState: document.getElementById("callState"),
+        callHint: document.getElementById("callHint"),
+        remoteAudio: document.getElementById("remoteAudio"),
+      };
+
+      class CloudStore {
+        constructor(settings) {
+          this.settings = settings;
+        }
+
+        get hasCloud() {
+          return Boolean(this.settings.cloudBaseUrl);
+        }
+
+        async get(path) {
+          if (this.hasCloud) {
+            const response = await fetch(`${this.settings.cloudBaseUrl}/${path}.json`);
+            return response.ok ? response.json() : null;
+          }
+          if (this.settings.useLocalFallback) {
+            const raw = localStorage.getItem(path);
+            return raw ? JSON.parse(raw) : null;
+          }
+          return null;
+        }
+
+        async set(path, value) {
+          if (this.hasCloud) {
+            await fetch(`${this.settings.cloudBaseUrl}/${path}.json`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(value),
+            });
+            return;
+          }
+          if (this.settings.useLocalFallback) {
+            localStorage.setItem(path, JSON.stringify(value));
+          }
+        }
+
+        async update(path, patch) {
+          if (this.hasCloud) {
+            await fetch(`${this.settings.cloudBaseUrl}/${path}.json`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(patch),
+            });
+            return;
+          }
+          if (this.settings.useLocalFallback) {
+            const current = (await this.get(path)) || {};
+            const next = { ...current, ...patch };
+            await this.set(path, next);
+          }
+        }
+      }
+
+      const cloud = () => new CloudStore(state.settings);
+
+      const renderAvatar = (character) => {
+        const initials = character.name
+          .split(" ")
+          .map((chunk) => chunk[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase();
+
+        return `
+          <div class="profile-chip">
+            <span class="avatar" style="background:${character.color}">${initials}</span>
+            <span>${character.name}</span>
+          </div>
+        `;
+      };
+
+      const loadSettings = () => {
+        const stored = localStorage.getItem("scratchcordSettings");
+        state.settings = stored
+          ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) }
+          : DEFAULT_SETTINGS;
+        dom.cloudBaseUrl.value = state.settings.cloudBaseUrl;
+        dom.localFallback.checked = state.settings.useLocalFallback;
+        updateCloudStatus();
+      };
+
+      const saveSettings = () => {
+        state.settings.cloudBaseUrl = dom.cloudBaseUrl.value.trim();
+        state.settings.useLocalFallback = dom.localFallback.checked;
+        localStorage.setItem("scratchcordSettings", JSON.stringify(state.settings));
+        updateCloudStatus();
+        startChatPolling();
+      };
+
+      const updateCloudStatus = () => {
+        if (state.settings.cloudBaseUrl) {
+          dom.cloudStatus.textContent = "Cloud connected";
+        } else if (state.settings.useLocalFallback) {
+          dom.cloudStatus.textContent = "Local demo mode";
+        } else {
+          dom.cloudStatus.textContent = "Not connected";
+        }
+      };
+
+      const renderFeed = () => {
+        dom.feed.innerHTML = state.data.feed
+          .map(
+            (item) => `
+            <article class="card">
+              <h3>${item.title}</h3>
+              <div class="chat-meta">${item.type} • ${item.character}</div>
+              <p>${item.body}</p>
+              <div>${item.reactions.map((reaction) => `<span class="tag">${reaction}</span>`).join("")}</div>
+            </article>
+          `,
+          )
+          .join("");
+      };
+
+      const renderProfiles = () => {
+        dom.profiles.innerHTML = state.data.characters
+          .map(
+            (character) => `
+            <article class="card">
+              ${renderAvatar(character)}
+              <p>${character.bio}</p>
+              <p><strong>Traits:</strong> ${character.traits.join(", ")}</p>
+              <p><strong>Role:</strong> ${character.role}</p>
+              <p><strong>Projects:</strong> ${character.projects.join(", ")}</p>
+            </article>
+          `,
+          )
+          .join("");
+      };
+
+      const renderProjects = () => {
+        dom.projects.innerHTML = state.data.projects
+          .map(
+            (project) => `
+            <article class="card">
+              <h3>${project.title}</h3>
+              <p>${project.description}</p>
+              <p><strong>Contributors:</strong> ${project.contributors.join(", ")}</p>
+              <p>${project.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</p>
+            </article>
+          `,
+          )
+          .join("");
+
+        dom.series.innerHTML = state.data.series
+          .map(
+            (series) => `
+            <article class="card">
+              <h3>${series.title}</h3>
+              <p>${series.description}</p>
+              <p><strong>Episodes:</strong> ${series.episodes.join(" → ")}</p>
+              <p><strong>Canon:</strong> ${series.canon ? "Canon" : "Non-canon"}</p>
+            </article>
+          `,
+          )
+          .join("");
+      };
+
+      const populateSelectors = () => {
+        const options = state.data.characters
+          .map((character) => `<option value="${character.id}">${character.name}</option>`)
+          .join("");
+        dom.characterSelect.innerHTML = options;
+        dom.callerCharacter.innerHTML = options;
+
+        const roomOptions = state.data.rooms
+          .map((room) => `<option value="${room.id}">${room.name}</option>`)
+          .join("");
+        dom.roomSelect.innerHTML = roomOptions;
+      };
+
+      const formatTimestamp = (iso) =>
+        new Date(iso).toLocaleString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          month: "short",
+          day: "numeric",
+        });
+
+      const renderChatMessages = (messages = []) => {
+        dom.chatMessages.innerHTML = messages
+          .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+          .map((message) => {
+            const character = state.data.characters.find((entry) => entry.id === message.characterId);
+            const speaker = character ? character.name : "Unknown";
+            const oocLabel = message.ooc ? "(OOC)" : "";
+            return `
+              <div class="chat-message">
+                <div class="chat-meta">${speaker} ${oocLabel} • ${formatTimestamp(message.timestamp)}</div>
+                <div class="chat-text">${message.text}</div>
+              </div>
+            `;
+          })
+          .join("");
+      };
+
+      const fetchChatMessages = async () => {
+        const roomId = state.activeRoomId;
+        const data = (await cloud().get(`chats/${roomId}`)) || { messages: {} };
+        const messages = Object.values(data.messages || {});
+        renderChatMessages(messages);
+      };
+
+      const sendChatMessage = async (text) => {
+        const roomId = state.activeRoomId;
+        const messageId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const payload = {
+          characterId: dom.characterSelect.value,
+          timestamp: new Date().toISOString(),
+          text,
+          ooc: dom.oocToggle.checked,
+        };
+
+        const current = (await cloud().get(`chats/${roomId}`)) || { messages: {} };
+        const nextMessages = { ...(current.messages || {}), [messageId]: payload };
+        await cloud().set(`chats/${roomId}`, { ...current, messages: nextMessages });
+        await fetchChatMessages();
+      };
+
+      const startChatPolling = () => {
+        if (state.chatPoller) {
+          clearInterval(state.chatPoller);
+        }
+        fetchChatMessages();
+        state.chatPoller = setInterval(fetchChatMessages, 3000);
+      };
+
+      const ensureRoomsInCloud = async () => {
+        const existing = await cloud().get("rooms");
+        if (!existing) {
+          await cloud().set("rooms", state.data.rooms);
+        }
+      };
+
+      const setCallState = (text) => {
+        dom.callState.textContent = text;
+      };
+
+      const createPeerConnection = () => {
+        const pc = new RTCPeerConnection({
+          iceServers: [
+            { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+          ],
+        });
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            queueLocalCandidate(event.candidate);
+          }
+        };
+
+        pc.ontrack = (event) => {
+          const [stream] = event.streams;
+          dom.remoteAudio.srcObject = stream;
+        };
+
+        pc.onconnectionstatechange = () => {
+          if (["failed", "disconnected"].includes(pc.connectionState)) {
+            setCallState("Connection failed");
+          }
+        };
+
+        return pc;
+      };
+
+      const queueLocalCandidate = async (candidate) => {
+        if (!state.callId) return;
+        const candidateId = `${candidate.sdpMLineIndex}-${candidate.candidate}`;
+        if (state.sentCandidateIds.has(candidateId)) return;
+        state.sentCandidateIds.add(candidateId);
+
+        const path = state.isCaller
+          ? `calls/${state.callId}/callerCandidates`
+          : `calls/${state.callId}/calleeCandidates`;
+        const existing = (await cloud().get(path)) || {};
+        const update = { ...existing, [Date.now()]: candidate.toJSON() };
+        await cloud().set(path, update);
+      };
+
+      const applyRemoteCandidates = async () => {
+        if (!state.callId || !state.peerConnection) return;
+        const path = state.isCaller
+          ? `calls/${state.callId}/calleeCandidates`
+          : `calls/${state.callId}/callerCandidates`;
+        const candidates = (await cloud().get(path)) || {};
+
+        for (const [id, candidate] of Object.entries(candidates)) {
+          if (state.processedRemoteCandidates.has(id)) continue;
+          state.processedRemoteCandidates.add(id);
+          try {
+            await state.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+          } catch (error) {
+            console.warn("Failed to add ICE candidate", error);
+          }
+        }
+      };
+
+      const startCallPolling = () => {
+        if (state.callPoller) {
+          clearInterval(state.callPoller);
+        }
+
+        state.callPoller = setInterval(async () => {
+          if (!state.callId) return;
+          const callData = (await cloud().get(`calls/${state.callId}`)) || {};
+
+          if (!state.isCaller && callData.offer && !state.peerConnection.currentRemoteDescription) {
+            await state.peerConnection.setRemoteDescription(new RTCSessionDescription(callData.offer));
+            const answer = await state.peerConnection.createAnswer();
+            await state.peerConnection.setLocalDescription(answer);
+            await cloud().update(`calls/${state.callId}`, { answer });
+            setCallState("Answer sent");
+          }
+
+          if (state.isCaller && callData.answer && !state.peerConnection.currentRemoteDescription) {
+            await state.peerConnection.setRemoteDescription(new RTCSessionDescription(callData.answer));
+            setCallState("Connected");
+          }
+
+          await applyRemoteCandidates();
+        }, 2000);
+      };
+
+      const startLocalAudio = async () => {
+        try {
+          state.localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        } catch (error) {
+          setCallState("Microphone blocked");
+          throw error;
+        }
+
+        state.localStream.getTracks().forEach((track) => {
+          state.peerConnection.addTrack(track, state.localStream);
+        });
+        dom.muteToggle.disabled = false;
+        dom.muteToggle.textContent = "Mute";
+      };
+
+      const createCall = async () => {
+        if (!dom.callId.value.trim()) {
+          dom.callId.value = `call-${Math.random().toString(16).slice(2, 7)}`;
+        }
+        state.callId = dom.callId.value.trim();
+        state.isCaller = true;
+        state.sentCandidateIds.clear();
+        state.processedRemoteCandidates.clear();
+        setCallState("Creating offer");
+
+        state.peerConnection = createPeerConnection();
+        await startLocalAudio();
+
+        const offer = await state.peerConnection.createOffer();
+        await state.peerConnection.setLocalDescription(offer);
+        await cloud().set(`calls/${state.callId}`, {
+          offer,
+          caller: dom.callerCharacter.value,
+          createdAt: new Date().toISOString(),
+        });
+
+        setCallState("Offer sent");
+        dom.leaveCall.disabled = false;
+        startCallPolling();
+      };
+
+      const joinCall = async () => {
+        if (!dom.callId.value.trim()) {
+          setCallState("Enter a Call ID");
+          return;
+        }
+
+        state.callId = dom.callId.value.trim();
+        state.isCaller = false;
+        state.sentCandidateIds.clear();
+        state.processedRemoteCandidates.clear();
+        setCallState("Joining call");
+
+        const callData = await cloud().get(`calls/${state.callId}`);
+        if (!callData || !callData.offer) {
+          setCallState("Offer not found");
+          return;
+        }
+
+        state.peerConnection = createPeerConnection();
+        await startLocalAudio();
+        await state.peerConnection.setRemoteDescription(new RTCSessionDescription(callData.offer));
+        const answer = await state.peerConnection.createAnswer();
+        await state.peerConnection.setLocalDescription(answer);
+        await cloud().update(`calls/${state.callId}`, { answer, callee: dom.callerCharacter.value });
+
+        setCallState("Answer sent");
+        dom.leaveCall.disabled = false;
+        startCallPolling();
+      };
+
+      const leaveCall = async () => {
+        if (state.peerConnection) {
+          state.peerConnection.close();
+        }
+        if (state.localStream) {
+          state.localStream.getTracks().forEach((track) => track.stop());
+        }
+
+        state.peerConnection = null;
+        state.localStream = null;
+        state.callId = null;
+        dom.remoteAudio.srcObject = null;
+        dom.leaveCall.disabled = true;
+        dom.muteToggle.disabled = true;
+        setCallState("Idle");
+        if (state.callPoller) {
+          clearInterval(state.callPoller);
+        }
+      };
+
+      const toggleMute = () => {
+        if (!state.localStream) return;
+        const track = state.localStream.getAudioTracks()[0];
+        if (!track) return;
+        track.enabled = !track.enabled;
+        dom.muteToggle.textContent = track.enabled ? "Mute" : "Unmute";
+      };
+
+      const initialize = async () => {
+        loadSettings();
+        renderFeed();
+        renderProfiles();
+        renderProjects();
+        populateSelectors();
+        await ensureRoomsInCloud();
+        startChatPolling();
+      };
+
+      // Event listeners
+
+      dom.saveCloud.addEventListener("click", saveSettings);
+
+      dom.roomSelect.addEventListener("change", (event) => {
+        state.activeRoomId = event.target.value;
+        fetchChatMessages();
+      });
+
+      dom.newRoom.addEventListener("click", async () => {
+        const name = window.prompt("Name your new room");
+        if (!name) return;
+        const id = `room-${Math.random().toString(16).slice(2, 7)}`;
+        state.data.rooms.push({ id, name });
+        populateSelectors();
+        dom.roomSelect.value = id;
+        state.activeRoomId = id;
+        await cloud().set("rooms", state.data.rooms);
+        await cloud().set(`chats/${id}`, { messages: {} });
+      });
+
+      dom.chatForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const text = dom.chatInput.value.trim();
+        if (!text) return;
+        await sendChatMessage(text);
+        dom.chatInput.value = "";
+      });
+
+      dom.createCall.addEventListener("click", createCall);
+
+      dom.joinCall.addEventListener("click", joinCall);
+
+      dom.leaveCall.addEventListener("click", leaveCall);
+
+      dom.muteToggle.addEventListener("click", toggleMute);
+
+      initialize();
+    </script>
+  </body>
+</html>
