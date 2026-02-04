@@ -308,6 +308,9 @@
 
       <section class="panel profile-panel">
         <h2>Character Profiles</h2>
+        <button id="addCharacter" class="secondary" type="button">
+          + Add Character
+        </button>
         <div id="profiles" class="card-grid"></div>
       </section>
 
@@ -403,129 +406,17 @@
       };
 
       const SAMPLE_DATA = {
-        characters: [
-          {
-            id: "bennybean07",
-            name: "Bennybean07",
-            bio: "A curious builder who loves inventing cozy gadgets for the JCTOT world.",
-            traits: ["Inventive", "Supportive", "Playful"],
-            role: "Maker of the CozyTech Toolkit",
-            projects: ["CozyTech Toolkit", "GlowGarden"],
-            color: "#ff7b72",
-          },
-          {
-            id: "superjed19",
-            name: "SuperJed19",
-            bio: "A friendly strategist who keeps the team focused on big story beats.",
-            traits: ["Focused", "Optimistic", "Creative"],
-            role: "Story captain of the JCTOT universe",
-            projects: ["Skyrail Saga", "JCTOT Almanac"],
-            color: "#5f8fff",
-          },
-          {
-            id: "kaitlyn365",
-            name: "Kaitlyn365",
-            bio: "A soundscape wizard who turns everyday moments into music.",
-            traits: ["Empathetic", "Musical", "Bright"],
-            role: "Audio guide and morale booster",
-            projects: ["Echo Trails", "Solar Beats"],
-            color: "#62d7b5",
-          },
-        ],
-        feed: [
-          {
-            title: "GlowGarden Week 3",
-            type: "Project Update",
-            character: "Bennybean07",
-            body: "The GlowGarden now has a surprise night mode! Leave a sparkle reaction if you want more glowing plants.",
-            reactions: ["✨", "🌱", "💡"],
-          },
-          {
-            title: "Skyrail Saga Episode 2",
-            type: "Series Drop",
-            character: "SuperJed19",
-            body: "Episode 2 is live. The crew meets the map keeper and learns a new secret about JCTOT history.",
-            reactions: ["🚂", "🗺️", "⭐"],
-          },
-          {
-            title: "Solar Beats Mix",
-            type: "Sound Drop",
-            character: "Kaitlyn365",
-            body: "A light, upbeat mix for drawing sessions. Perfect for brainstorming together.",
-            reactions: ["🎧", "🎵", "☀️"],
-          },
-        ],
-        projects: [
-          {
-            title: "CozyTech Toolkit",
-            description: "A toolkit of friendly gadgets that help JCTOT characters build comfy spaces.",
-            contributors: ["Bennybean07", "Kaitlyn365"],
-            tags: ["Canon", "Workshop", "Gadgets"],
-          },
-          {
-            title: "Skyrail Saga",
-            description: "A serialized adventure following the Skyrail crew across floating districts.",
-            contributors: ["SuperJed19", "Bennybean07"],
-            tags: ["Series", "Canon", "Adventure"],
-          },
-        ],
-        series: [
-          {
-            title: "Skyrail Saga",
-            description: "Episode-by-episode adventures on the Skyrail.",
-            episodes: ["Episode 1: The Launch", "Episode 2: The Map Keeper"],
-            canon: true,
-          },
-          {
-            title: "Echo Trails",
-            description: "Short audio stories about the sounds of JCTOT.",
-            episodes: ["Episode 1: River Echo", "Episode 2: Wind Alley"],
-            canon: false,
-          },
-        ],
-        rooms: [
-          { id: "global", name: "Global Chat" },
-          { id: "story-team", name: "Story Team" },
-        ],
-      };
-
-      const EXAMPLE_CLOUD_LAYOUT = {
-        rooms: [
-          { id: "global", name: "Global Chat" },
-          { id: "story-team", name: "Story Team" },
-        ],
-        chats: {
-          global: {
-            messages: {
-              "1700000000-a1b2": {
-                characterId: "bennybean07",
-                timestamp: "2024-01-01T18:22:00.000Z",
-                text: "Welcome to ScratchCord!",
-                ooc: false,
-              },
-            },
-          },
-        },
-        calls: {
-          "call-abc12": {
-            offer: { type: "offer", sdp: "..." },
-            answer: { type: "answer", sdp: "..." },
-            caller: "bennybean07",
-            callee: "superjed19",
-            callerCandidates: {
-              "1700000001": { candidate: "...", sdpMid: "0", sdpMLineIndex: 0 },
-            },
-            calleeCandidates: {
-              "1700000002": { candidate: "...", sdpMid: "0", sdpMLineIndex: 0 },
-            },
-          },
-        },
+        characters: [],
+        feed: [],
+        projects: [],
+        series: [],
+        rooms: [],
       };
 
       const state = {
         settings: { ...DEFAULT_SETTINGS },
         data: SAMPLE_DATA,
-        activeRoomId: "global",
+        activeRoomId: "",
         chatPoller: null,
         callPoller: null,
         peerConnection: null,
@@ -547,6 +438,7 @@
         series: document.getElementById("series"),
         roomSelect: document.getElementById("roomSelect"),
         newRoom: document.getElementById("newRoom"),
+        addCharacter: document.getElementById("addCharacter"),
         characterSelect: document.getElementById("characterSelect"),
         chatMessages: document.getElementById("chatMessages"),
         chatForm: document.getElementById("chatForm"),
@@ -662,71 +554,121 @@
       };
 
       const renderFeed = () => {
+        if (!state.data.feed.length) {
+          dom.feed.innerHTML = `
+            <article class="card">
+              <h3>No posts yet</h3>
+              <p>Create your first JCTOT update in your shared cloud JSON to populate this feed.</p>
+            </article>
+          `;
+          return;
+        }
+
         dom.feed.innerHTML = state.data.feed
           .map(
             (item) => `
-            <article class="card">
-              <h3>${item.title}</h3>
-              <div class="chat-meta">${item.type} • ${item.character}</div>
-              <p>${item.body}</p>
-              <div>${item.reactions.map((reaction) => `<span class="tag">${reaction}</span>`).join("")}</div>
-            </article>
-          `,
+              <article class="card">
+                <h3>${item.title}</h3>
+                <div class="chat-meta">${item.type} • ${item.character}</div>
+                <p>${item.body}</p>
+                <div>${item.reactions
+                  .map((reaction) => `<span class="tag">${reaction}</span>`)
+                  .join("")}</div>
+              </article>
+            `,
           )
           .join("");
       };
 
       const renderProfiles = () => {
+        if (!state.data.characters.length) {
+          dom.profiles.innerHTML = `
+            <article class="card">
+              <h3>No characters yet</h3>
+              <p>Add a character to start chatting in-universe.</p>
+            </article>
+          `;
+          return;
+        }
+
         dom.profiles.innerHTML = state.data.characters
           .map(
             (character) => `
-            <article class="card">
-              ${renderAvatar(character)}
-              <p>${character.bio}</p>
-              <p><strong>Traits:</strong> ${character.traits.join(", ")}</p>
-              <p><strong>Role:</strong> ${character.role}</p>
-              <p><strong>Projects:</strong> ${character.projects.join(", ")}</p>
-            </article>
-          `,
+              <article class="card">
+                ${renderAvatar(character)}
+                <p>${character.bio}</p>
+                <p><strong>Traits:</strong> ${character.traits.join(", ")}</p>
+                <p><strong>Role:</strong> ${character.role}</p>
+                <p><strong>Projects:</strong> ${character.projects.join(", ")}</p>
+              </article>
+            `,
           )
           .join("");
       };
 
       const renderProjects = () => {
-        dom.projects.innerHTML = state.data.projects
-          .map(
-            (project) => `
+        if (!state.data.projects.length) {
+          dom.projects.innerHTML = `
             <article class="card">
-              <h3>${project.title}</h3>
-              <p>${project.description}</p>
-              <p><strong>Contributors:</strong> ${project.contributors.join(", ")}</p>
-              <p>${project.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</p>
+              <h3>No projects yet</h3>
+              <p>Share project data in your cloud JSON to list it here.</p>
             </article>
-          `,
-          )
-          .join("");
+          `;
+        } else {
+          dom.projects.innerHTML = state.data.projects
+            .map(
+              (project) => `
+                <article class="card">
+                  <h3>${project.title}</h3>
+                  <p>${project.description}</p>
+                  <p><strong>Contributors:</strong> ${project.contributors.join(", ")}</p>
+                  <p>${project.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</p>
+                </article>
+              `,
+            )
+            .join("");
+        }
+
+        if (!state.data.series.length) {
+          dom.series.innerHTML = `
+            <article class="card">
+              <h3>No series yet</h3>
+              <p>Add a series list to your cloud JSON to organize episodes.</p>
+            </article>
+          `;
+          return;
+        }
 
         dom.series.innerHTML = state.data.series
           .map(
             (series) => `
-            <article class="card">
-              <h3>${series.title}</h3>
-              <p>${series.description}</p>
-              <p><strong>Episodes:</strong> ${series.episodes.join(" → ")}</p>
-              <p><strong>Canon:</strong> ${series.canon ? "Canon" : "Non-canon"}</p>
-            </article>
-          `,
+              <article class="card">
+                <h3>${series.title}</h3>
+                <p>${series.description}</p>
+                <p><strong>Episodes:</strong> ${series.episodes.join(" → ")}</p>
+                <p><strong>Canon:</strong> ${series.canon ? "Canon" : "Non-canon"}</p>
+              </article>
+            `,
           )
           .join("");
       };
 
       const populateSelectors = () => {
-        const options = state.data.characters
-          .map((character) => `<option value="${character.id}">${character.name}</option>`)
-          .join("");
-        dom.characterSelect.innerHTML = options;
-        dom.callerCharacter.innerHTML = options;
+        if (!state.data.characters.length) {
+          dom.characterSelect.innerHTML = `<option value="">Add a character</option>`;
+          dom.callerCharacter.innerHTML = `<option value="">Add a character</option>`;
+        } else {
+          const options = state.data.characters
+            .map((character) => `<option value="${character.id}">${character.name}</option>`)
+            .join("");
+          dom.characterSelect.innerHTML = options;
+          dom.callerCharacter.innerHTML = options;
+        }
 
+        if (!state.data.rooms.length) {
+          dom.roomSelect.innerHTML = `<option value="">Create a room</option>`;
+          return;
+        }
         const roomOptions = state.data.rooms
           .map((room) => `<option value="${room.id}">${room.name}</option>`)
           .join("");
@@ -760,6 +702,15 @@
 
       const fetchChatMessages = async () => {
         const roomId = state.activeRoomId;
+        if (!roomId) {
+          dom.chatMessages.innerHTML = `
+            <div class="chat-message">
+              <div class="chat-meta">No room selected</div>
+              <div class="chat-text">Create a room to start chatting.</div>
+            </div>
+          `;
+          return;
+        }
         const data = (await cloud().get(`chats/${roomId}`)) || { messages: {} };
         const messages = Object.values(data.messages || {});
         renderChatMessages(messages);
@@ -767,6 +718,14 @@
 
       const sendChatMessage = async (text) => {
         const roomId = state.activeRoomId;
+        if (!roomId) {
+          window.alert("Create a room before sending messages.");
+          return;
+        }
+        if (!dom.characterSelect.value) {
+          window.alert("Add a character before sending messages.");
+          return;
+        }
         const messageId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
         const payload = {
           characterId: dom.characterSelect.value,
@@ -791,9 +750,33 @@
 
       const ensureRoomsInCloud = async () => {
         const existing = await cloud().get("rooms");
-        if (!existing) {
-          await cloud().set("rooms", state.data.rooms);
+        if (existing && Array.isArray(existing) && existing.length) {
+          state.data.rooms = existing;
+          return;
         }
+
+        state.data.rooms = [];
+        await cloud().set("rooms", state.data.rooms);
+      };
+
+      const loadDataFromCloud = async () => {
+        const [characters, feed, projects, series, rooms] = await Promise.all([
+          cloud().get("characters"),
+          cloud().get("feed"),
+          cloud().get("projects"),
+          cloud().get("series"),
+          cloud().get("rooms"),
+        ]);
+
+        state.data = {
+          characters: Array.isArray(characters) ? characters : [],
+          feed: Array.isArray(feed) ? feed : [],
+          projects: Array.isArray(projects) ? projects : [],
+          series: Array.isArray(series) ? series : [],
+          rooms: Array.isArray(rooms) ? rooms : [],
+        };
+
+        state.activeRoomId = state.data.rooms.length ? state.data.rooms[0].id : "";
       };
 
       const setCallState = (text) => {
@@ -987,11 +970,12 @@
 
       const initialize = async () => {
         loadSettings();
+        await loadDataFromCloud();
+        await ensureRoomsInCloud();
         renderFeed();
         renderProfiles();
         renderProjects();
         populateSelectors();
-        await ensureRoomsInCloud();
         startChatPolling();
       };
 
@@ -1014,6 +998,33 @@
         state.activeRoomId = id;
         await cloud().set("rooms", state.data.rooms);
         await cloud().set(`chats/${id}`, { messages: {} });
+      });
+
+      dom.addCharacter.addEventListener("click", async () => {
+        const name = window.prompt("Character name");
+        if (!name) return;
+        const bio = window.prompt("Short bio");
+        const traitsRaw = window.prompt("Traits (comma separated)");
+        const role = window.prompt("Role in JCTOT");
+        const projectsRaw = window.prompt("Projects (comma separated)");
+        const color = window.prompt("Avatar color (hex)", "#7c7bff");
+
+        const character = {
+          id: name.toLowerCase().replace(/\\s+/g, "-"),
+          name,
+          bio: bio || "",
+          traits: traitsRaw ? traitsRaw.split(",").map((trait) => trait.trim()).filter(Boolean) : [],
+          role: role || "",
+          projects: projectsRaw
+            ? projectsRaw.split(",").map((project) => project.trim()).filter(Boolean)
+            : [],
+          color: color || "#7c7bff",
+        };
+
+        state.data.characters.push(character);
+        await cloud().set("characters", state.data.characters);
+        renderProfiles();
+        populateSelectors();
       });
 
       dom.chatForm.addEventListener("submit", async (event) => {

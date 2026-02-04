@@ -38,10 +38,6 @@ ScratchCord: JCTOT is a fully client-side, Scratch-inspired social platform for 
    - `calls/<callId>/calleeCandidates`
 4. Each peer polls the JSON nodes and applies new candidates until connected.
 
-## Example Cloud JSON Layout
-
-The single HTML file includes a JavaScript constant named `EXAMPLE_CLOUD_LAYOUT` that matches the cloud JSON schema. Share the structure with your friends when configuring a public JSON host.
-
 ## Sample Chat + Call Flow
 
 1. Both users set the **same cloud JSON base URL** in the settings panel.
@@ -72,7 +68,7 @@ Open `http://localhost:8080`.
 
 ## Cloud JSON Provider Setup (No Private Keys)
 
-ScratchCord expects a public JSON base URL (Firebase Realtime Database works well).
+ScratchCord expects a public JSON base URL (any public JSON host works).
 
 ### Firebase Realtime Database (Public Rules)
 
@@ -89,8 +85,7 @@ ScratchCord expects a public JSON base URL (Firebase Realtime Database works wel
 }
 ```
 
-4. Copy the database URL, e.g.:
-   `https://your-project.firebaseio.com`
+4. Copy the database URL for your JSON host.
 5. Paste it into **Cloud JSON Base URL**.
 
 > This uses only public endpoints and no private API keys.
