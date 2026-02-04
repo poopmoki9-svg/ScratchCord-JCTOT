@@ -6,12 +6,7 @@ ScratchCord: JCTOT is a fully client-side, Scratch-inspired social platform for 
 
 ```
 .
-├── index.html
-├── styles.css
-├── app.js
-└── data
-    ├── sample-data.json
-    └── example-cloud-layout.json
+└── index.html
 ```
 
 ## Key Features
@@ -45,7 +40,7 @@ ScratchCord: JCTOT is a fully client-side, Scratch-inspired social platform for 
 
 ## Example Cloud JSON Layout
 
-See `data/example-cloud-layout.json` for a full example payload.
+The single HTML file includes a JavaScript constant named `EXAMPLE_CLOUD_LAYOUT` that matches the cloud JSON schema. Share the structure with your friends when configuring a public JSON host.
 
 ## Sample Chat + Call Flow
 
